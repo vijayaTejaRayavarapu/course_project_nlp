@@ -1,0 +1,25 @@
+{
+  "name": "course_project_nlp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "translator.js",
+  "dependencies": {
+    "got": "^10.4.0",
+    "jsdom": "^16.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vijayaTejaRayavarapu/course_project_nlp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vijayaTejaRayavarapu/course_project_nlp/issues"
+  },
+  "homepage": "https://github.com/vijayaTejaRayavarapu/course_project_nlp#readme"
+}

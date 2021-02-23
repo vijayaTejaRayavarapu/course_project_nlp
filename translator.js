@@ -1,21 +1,29 @@
-const https = require('https')
-const options = {
-    hostname: 'translate.google.com',
-    port: 443,
-    path: '/?sl=auto&tl=hi&text=the%20apple%20is%20good&op=translate',
-    method: 'GET'
-  }
+const fs = require('fs');
+const got = require('got');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const k = 3
+for (j = 1; j<76; j++){
+  var i = j
+  const vgmUrl= 'https://valmikiramayan.net/utf8/aranya/sarga'+i+'/aranyasans'+i+'.htm';
   
-  const req = https.request(options, res => {
-    console.log(res.body)
-  
-    res.on('data', d => {
-      process.stdout.write(d)
-    })
-  })
-  
-  req.on('error', error => {
-    console.error(error)
-  })
-  
-  req.end()
+  got(vgmUrl).then(response => {
+    var a = response.body
+    var jsom = new JSDOM(a)
+    sanslokas = jsom.window.document.getElementsByClassName("SanSloka")
+    tats = jsom.window.document.getElementsByClassName("tat")
+    for(each in sanslokas){
+        fs.appendFileSync("sans_"+ k + ".txt",sanslokas[each].innerHTML + "\n")
+      
+    }
+    for(each in tats){
+        fs.appendFileSync("eng_"+ k + ".txt",tats[each].innerHTML + "\n\n")
+      
+    }
+    
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
+
