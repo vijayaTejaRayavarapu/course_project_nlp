@@ -3,31 +3,66 @@ const got = require('got');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const k = 1
-for (j = 1; j<2; j++){
-  var i = j
-  const vgmUrl= 'https://valmikiramayan.net/utf8/aranya/sarga'+i+'/aranyasans'+i+'.htm';
+urls = [
+  ['https://valmikiramayan.net/utf8/baala/sarga', '/balasans', 78, 'book1'],
+  ['https://valmikiramayan.net/utf8/ayodhya/sarga','/ayodhyasans',120, 'book2'],
+  ['https://valmikiramayan.net/utf8/aranya/sarga', '/aranyasans', 76, 'book3'],
+  ['https://www.valmikiramayan.net/utf8/kish/sarga','/kishkindhasans' ,68, 'book4'],
+  ['https://www.valmikiramayan.net/utf8/sundara/sarga','/sundarasans',69 , 'book5'],
+  ['https://www.valmikiramayan.net/utf8/yuddha/sarga','/yuddhasans',129, 'book6']
+]
+
+getAndAddEachBook(0, urls)
+
+
+function getAndAddEachBook(i, urlVals){
+  const promise = getAndAddEachChapter(1, urlVals[i][2], urlVals[i], i+1).then(()=>{
+    if(i+1 < 6){
+      getAndAddEachBook(i+1, urlVals)
+    }
+  })
+}
+
+function getAndAddEachChapter(x, max, urlVals, bookId){
   
+  const vgmUrl= urlVals[0] + x + urlVals[1] + x + '.htm';
   got(vgmUrl).then(response => {
     var a = response.body
     var jsom = new JSDOM(a)
-    sanslokas = jsom.window.document.body.childNodes
-    console.log(sanslokas)
-    for (each in sanslokas){
-    console.log(sanslokas[each].innerHTML)
-    }
-//    tats = jsom.window.document.getElementsByClassName("tat")
-  //  for(each in sanslokas){
-//        fs.appendFileSync("sans_"+ k + ".txt",sanslokas[each].innerHTML + "\n")
-//
-//    }
-//    for(each in tats){
-//        fs.appendFileSync("eng_"+ k + ".txt",tats[each].innerHTML + "\n\n")
-//
-//    }
-    
+    pratipadas = jsom.window.document.getElementsByClassName('pratipada')
+     const promise = addEachToFile(0, pratipadas.length, pratipadas, urlVals[3] + ".txt", x, bookId).then(()=>{
+       if(x+1 < max){
+         getAndAddEachChapter(x+1, max, urlVals, bookId)
+       }
+
+     })   
   }).catch(err => {
     console.log(err);
   });
+  return new Promise(function(resolve, reject) {
+    resolve('start of new Book');
+  });
 }
 
-
+function addEachToFile(i, max, val, fileName, chapterId, bookId){
+  pratipada = val[i]
+  eng = ""
+  sans = ""
+  if (pratipada.nextElementSibling.className == "tat"){
+    eng = "BEGIN_" + pratipada.nextElementSibling.textContent + "_END"
+  }
+  if (pratipada.previousElementSibling.className == "SanSloka"){
+    sans = "BEGIN_" + pratipada.previousElementSibling.textContent + "_END"
+  }
+  joint = "B_" + bookId + "_C_"+ chapterId + "_"+ i + "\n" + sans + "\n" + eng + "\n\n"
+  fs.appendFile(
+    fileName, joint, () => {
+        if (i+1 < max){
+          addEachToFile(i+1, max, val, fileName, chapterId, bookId)
+        }
+    } 
+  )
+  return new Promise(function(resolve, reject) {
+    resolve('start of new Chapter');
+  });
+}
