@@ -4,6 +4,7 @@
   "description": "",
   "main": "translator.js",
   "dependencies": {
+    "csv-writer": "^1.6.0",
     "got": "^10.4.0",
     "jsdom": "^16.4.0"
   },
