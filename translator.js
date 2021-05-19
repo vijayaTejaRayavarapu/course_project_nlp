@@ -19,6 +19,8 @@ const csvWriter = csv({path:"allData.csv",header: [
 getAndAddEachBook(0, urls)
 
 
+
+
 function getAndAddEachBook(i, urlVals){
   const promise = getAndAddEachChapter(1, urlVals[i][2], urlVals[i], i+1).then(()=>{
     if(i+1 < 6){
